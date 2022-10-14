@@ -1,48 +1,61 @@
-# School Database Hacking
+# Взлом электронного дневника
 
-## About
+## О проекте
 
-This package is written specifically for manipulating data in existing Django based school E-Diary application. The package mainly utilizes the instruments of Django ORM and designed to be used from Django shell.
+Данный модуль создан для корректировки информации в базе данных приложения "Электронный дневник", работающего на фреймворке Django (пример такого приложения можно скачать [здесь](https://github.com/devmanorg/e-diary/tree/master)). Модуль преимущественно использует инструменты [Django ORM](https://highload.today/django-orm/) и предназначен для использования в терминале Django.
 
-This application created for educational purposes as part of an online course for web developers at [dvmn.org](https://dvmn.org/)
+Данный программный код написан в образовательных целях онлайн-курса для веб-разработчиков [dvmn.org](https://dvmn.org/)
 
-## Running the application
+## Запуск программы
 
-1. Download application files from GitHub with `git clone` command:
+1. Скачайте файлы с GitHub с помощью комманды `git clone`:
 ```
 git clone https://github.com/SergIvo/dvmn-db-hacking
 ```
-2. Copy `hacking.py` into the root directory of Django application. This must be the same directory as contains `manage.py` script and the `datacenter` project directory.
-3. Run Django shell:
+2. Скопируйте файл `hacking.py` в корневую папку приложения Django. Это должна быть та же папка, в которой находится файл `manage.py` и папка `datacenter`.
+```
+.
+├── datacenter
+├── hacking.py
+├── manage.py
+├── project
+├── __pycache__
+├── README.md
+├── requirements.txt
+└── schoolbase.sqlite3
+```
+3. Запустите терминал Django следующей командой:
 ```
 python manage.py shell
 ```
-Import the whole `hacking` package or just necessary functions:
+Далее импортируйте весь модуль `hacking` или отдельные функции из него. Чтобы импортировать модуль, введите следующую команду:
 ```
 import hacking
 ```
-Package contains three functions for manipulating data in application database. Function `fix_marks` accepts `Schoolkid` object as an argument and replaces all '2' and '3' marks with '5' marks for given student:
+Модуль содержит три функции для корректировки данных в базе. Функция `fix_marks` заменяет все оценки '2' и '3' на оценки '5' для указанного ученика. Чтобы указать нужного ученика, нужно получить запись этого ученика из модели `Schoolkid`. Про модели данных в Django можно подробнее прочитать [здесь](https://django.fun/ru/docs/django/4.1/topics/db/models/). Для того, чтобы воспользоваться функцией `fix_marks`, достаточно ввести в консоли следующие команды:
 ```
 from datacenter.models import Schoolkid
 from hacking import fix_marks
 
 
-target_kid = Schoolkid.objects.get(full_name="kid's full name")
+target_kid = Schoolkid.objects.get(full_name="Фамилия Имя Отчество ученика, полностью, именно в таком порядке")
 fix_marks(target_kid)
 ```
-Function `remove_chastisements` works the similar way. It takes `Schoolkid` instance and removes all chastisements from database for given student:
+Функция `remove_chastisements` работает схожим образом. Ей также необходимо передать запись нужного ученика из модели `Schoolkid`, после чего функция удалит из базы данных все замечания, сделанные этому ученику. Пример использования:
 ```
 from datacenter.models import Schoolkid
 from hacking import remove_chastisements
 
 
-target_kid = Schoolkid.objects.get(full_name="kid's full name")
+target_kid = Schoolkid.objects.get(full_name="Фамилия Имя Отчество ученика, полностью, именно в таком порядке")
 remove_chastisements(target_kid)
 ```
-Function `create_commendation` accepts student's full name in string format and a subject title also as a string. This function adds random commendation for a last lesson of specified subject:
+Про использование моделей Django ORM, получение информации из них и другие их возможности можно подробнее прочитать [здесь](https://django.fun/ru/docs/django/4.1/topics/db/queries/)
+
+Функция `create_commendation` добавляет случайную похвалу указанному ученику за последний урок по указанному предмету. ФИО ученика и название предмета должны быть указаны полностью, через запятую. Пример использования:
 ```
 from hacking import remove_chastisements
 
 
-create_commendation("kid's full name", "subject title")
+create_commendation("Фамилия Имя Отчество ученика", "Название предмета")
 ```
